@@ -1,2 +1,4 @@
-package co.com.crediya.api.user;public class UserRoute {
+package co.com.crediya.api.user;
+
+public class UserRoute {
 }

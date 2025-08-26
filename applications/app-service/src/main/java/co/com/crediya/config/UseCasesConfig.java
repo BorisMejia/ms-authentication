@@ -17,7 +17,7 @@ import org.springframework.context.annotation.FilterType;
 public class UseCasesConfig {
 
         @Bean
-        public IUserUseCase userUseCase(UserRepository userRepository){
+        public UserUseCase userUseCase(UserRepository userRepository){
                 return new UserUseCase(userRepository);
         }
 }

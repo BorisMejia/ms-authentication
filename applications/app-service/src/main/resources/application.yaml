@@ -11,6 +11,18 @@ spring:
       path: "/h2"
   profiles:
     include: null
+adapters:
+  r2dbc:
+    host: "localhost"
+    port: 5433
+    database: "auth_db"
+    schema: "public"
+    username: "auth_user"
+    password: "auth_pass"
+  data:
+    r2dbc:
+      repositories: null
+      enabled: true
 management:
   endpoints:
     web:
