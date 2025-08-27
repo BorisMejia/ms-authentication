@@ -23,6 +23,6 @@ public class UserEntity {
     private String address;
     private String phone;
     private String email;
-    private BigDecimal baseSalary;
+    private Long baseSalary;
     private String roleId;
 }
