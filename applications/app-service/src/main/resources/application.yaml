@@ -23,6 +23,12 @@ adapters:
     r2dbc:
       repositories: null
       enabled: true
+spring-doc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger
+
 management:
   endpoints:
     web:
