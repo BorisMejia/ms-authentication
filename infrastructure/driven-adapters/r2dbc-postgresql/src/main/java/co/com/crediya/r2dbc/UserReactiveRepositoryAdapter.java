@@ -13,13 +13,13 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Repository
-public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
+public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     User/* change for domain model */,
     UserEntity/* change for adapter model */,
     String,
-    MyReactiveRepository
+        UserReactiveRepository
 > implements UserRepository {
-    public MyReactiveRepositoryAdapter(MyReactiveRepository repository, ObjectMapper mapper) {
+    public UserReactiveRepositoryAdapter(UserReactiveRepository repository, ObjectMapper mapper) {
         /**
          *  Could be use mapper.mapBuilder if your domain model implement builder pattern
          *  super(repository, mapper, d -> mapper.mapBuilder(d,ObjectModel.ObjectModelBuilder.class).build());

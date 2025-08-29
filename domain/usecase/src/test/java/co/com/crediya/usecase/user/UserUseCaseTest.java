@@ -21,6 +21,7 @@ public class UserUseCaseTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
     private UserUseCase useCase;
 
     @BeforeEach

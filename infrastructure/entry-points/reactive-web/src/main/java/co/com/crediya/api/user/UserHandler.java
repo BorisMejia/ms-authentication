@@ -39,7 +39,7 @@ public class UserHandler {
                 .doOnNext(userLog -> log.info("Creating user"))
                 .flatMap(userUseCase::createUser)
                 .map(userMapperDto::toResponse)
-                .flatMap(resp -> ServerResponse.status(201).bodyValue(resp));
+                .flatMap(response -> ServerResponse.status(201).bodyValue(response));
     }
 
     private Mono<CreateUserRequestDto> validate(CreateUserRequestDto createUserDto) {

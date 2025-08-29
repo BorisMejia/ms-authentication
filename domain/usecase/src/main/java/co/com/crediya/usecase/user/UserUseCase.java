@@ -16,9 +16,7 @@ public class UserUseCase implements IUserUseCase{
                 .flatMap(exists ->
                 {
                     if (exists)
-                    {
                         return Mono.error(new EmailAlreadyExistsException(user.getEmail()));
-                    }
                     if (user.getName() == null || user.getName().isBlank())
                         return Mono.error(new IllegalArgumentException("Name is required"));
                     if (user.getLastName() == null || user.getLastName().isBlank())
