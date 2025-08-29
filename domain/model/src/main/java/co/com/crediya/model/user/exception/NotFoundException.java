@@ -1,4 +1,4 @@
-package co.com.crediya.model.solicitud.exception;
+package co.com.crediya.model.user.exception;
 
 public class NotFoundException extends DomainException{
 
