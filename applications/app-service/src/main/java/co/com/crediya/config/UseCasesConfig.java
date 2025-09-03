@@ -1,7 +1,6 @@
 package co.com.crediya.config;
 
 import co.com.crediya.model.user.gateways.UserRepository;
-import co.com.crediya.usecase.user.IUserUseCase;
 import co.com.crediya.usecase.user.UserUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
