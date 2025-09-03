@@ -28,7 +28,10 @@ spring-doc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger
-
+security:
+  jwt:
+    issuer: crediya-auth
+    expiration-minutes: 120
 management:
   endpoints:
     web:
