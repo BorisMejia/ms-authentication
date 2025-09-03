@@ -29,6 +29,11 @@ public class UserUseCase implements IUserUseCase{
 
     }
 
+    @Override
+    public Mono<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email.toLowerCase());
+    }
+
     private User sanitizeAndValidate(User user, String emailLower) {
         if (isBlank(user.getName()))     throw new ValidationException("name is required");
         if (isBlank(user.getLastName())) throw new ValidationException("lastName is required");
