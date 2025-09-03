@@ -13,8 +13,8 @@ public record CreateUserRequestDto(
         String     address,
         String     phone,
         @Schema(example = "example@gmail.com") @NotBlank @Email String email,
+        @NotBlank String password,
         @Schema(example = "3500000.00", minimum = "0", maximum = "15000000")
-        @NotNull @DecimalMin("0") @DecimalMax("15000000") BigDecimal baseSalary,
-        String roleId
+        @NotNull @DecimalMin("0") @DecimalMax("15000000") Long baseSalary
 ) {
 }
