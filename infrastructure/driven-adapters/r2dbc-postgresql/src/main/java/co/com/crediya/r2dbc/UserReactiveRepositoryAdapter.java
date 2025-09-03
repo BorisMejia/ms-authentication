@@ -10,6 +10,7 @@ import co.com.crediya.r2dbc.role.mapper.RoleCodeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -50,7 +51,7 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
                             .doOnSuccess(d -> log.debug("DB saved id={} email={}", d.getId(), d.getEmail()));
                 })
                 .map(this::toEntity)
-                .onErrorMap(org.springframework.dao.DuplicateKeyException.class, ex -> {
+                .onErrorMap(DuplicateKeyException.class, ex -> {
                     log.warn("DB duplicate email={}", user.getEmail());
                     return new IllegalArgumentException("Email already registered");
                 });
