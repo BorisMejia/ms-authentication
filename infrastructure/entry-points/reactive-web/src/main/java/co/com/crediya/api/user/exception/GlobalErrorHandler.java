@@ -1,4 +1,4 @@
-package co.com.crediya.api;
+package co.com.crediya.api.user.exception;
 
 import co.com.crediya.model.user.exception.DomainException;
 import co.com.crediya.model.user.exception.NotFoundException;
