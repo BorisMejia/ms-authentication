@@ -1,4 +1,4 @@
-package co.com.crediya.api.user.dto.request;
+package co.com.crediya.api.user.register.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;

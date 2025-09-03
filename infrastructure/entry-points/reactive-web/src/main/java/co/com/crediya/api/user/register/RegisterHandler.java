@@ -1,8 +1,7 @@
 package co.com.crediya.api.user.register;
 
-import co.com.crediya.api.user.dto.mapper.UserMapperDto;
-import co.com.crediya.api.user.dto.request.CreateUserRequestDto;
-import co.com.crediya.api.user.exception.ErrorHttpMapper;
+import co.com.crediya.api.user.register.dto.mapper.UserMapperDto;
+import co.com.crediya.api.user.register.dto.request.CreateUserRequestDto;
 import co.com.crediya.api.user.support.RegisterUserAssembler;
 import co.com.crediya.api.user.support.ResponseUtils;
 import co.com.crediya.api.user.validations.CreateUserValidator;
@@ -34,8 +33,7 @@ public class RegisterHandler {
                 .map(registerUserAssembler::toDomain)
                 .flatMap(userUseCase::createUser)
                 .map(mapperDto::toResponse)
-                .flatMap(ResponseUtils::okJson)
-                .onErrorResume(ErrorHttpMapper::map);
+                .flatMap(ResponseUtils::okJson);
     }
 
     public Mono<ServerResponse> health(ServerRequest request) {
