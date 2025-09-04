@@ -37,18 +37,21 @@ public class LoginHandler {
     private Mono<TokenResponse> authenticateAndIssueToken(LoginAssembler.Credentials credential) {
         return userUseCase.getUserByEmail(credential.emailLower())
                 .switchIfEmpty(Mono.error(new ValidationException("Credenciales inválidas")))
-                .flatMap(u -> {
-                    String encoded = u.getPassword();
-                    if (encoded == null || encoded.isBlank()) return Mono.error(new ValidationException("Credenciales inválidas"));
+                .flatMap(user -> {
+                    String encoded = user.getPassword();
+                    if (encoded == null || encoded.isBlank())
+                        return Mono.error(new ValidationException("Credenciales inválidas"));
                     try {
                         if (!passwordEncoder.matches(credential.rawPassword(), encoded))
                             return Mono.error(new ValidationException("Credenciales inválidas"));
                     } catch (IllegalArgumentException badFormat) {
                         return Mono.error(new ValidationException("Credenciales inválidas"));
                     }
-                    var role = u.getRole() != null ? u.getRole().name() : "CLIENTE";
 
-                    var token = jwt.generateTimeToken(u.getEmail(), role);
+                    if (user.getRole() == null)
+                        return Mono.error(new ValidationException("Usuario sin rol asignado"));
+
+                    String token = jwt.generateTimeToken(user.getEmail(), user.getRole().name());
                     return Mono.just(new TokenResponse(token, jwt.expiresAt(token)));
                 });
     }
