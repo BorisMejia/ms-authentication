@@ -30,7 +30,6 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                //.authorizeExchange(reg -> reg.anyExchange().permitAll())
                 .authorizeExchange(reg -> reg
                         .pathMatchers(
                                 "/v3/api-docs/**",
@@ -42,7 +41,7 @@ public class SecurityConfig {
                                 "/api/v1/health"
                         ).permitAll()
                         .pathMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
-                        .pathMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+                        .pathMatchers(HttpMethod.POST, "/api/v1/users").hasAnyRole("ADMIN","ADVISOR") // <- protegido
                         .anyExchange().authenticated()
                 )
                 .addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)
