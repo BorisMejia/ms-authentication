@@ -1,3 +1,3 @@
 package co.com.crediya.model.role;
 
-public enum Role { ADMIN, ASESOR, CLIENTE }
+public enum Role { ADMIN, ADVISOR, CLIENT }

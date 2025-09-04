@@ -25,5 +25,5 @@ public class UserEntity {
     private String email;
     private String password;
     private Long baseSalary;
-    private String roleId;
+    private Long roleId;
 }
