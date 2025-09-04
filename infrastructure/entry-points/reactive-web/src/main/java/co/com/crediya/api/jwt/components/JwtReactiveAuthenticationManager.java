@@ -28,11 +28,10 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
         if (!jwt.validateToken(token)) return Mono.empty();
 
         String email = jwt.subject(token);
-        String rol   = jwt.role(token);
-        var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + rol));
+        String role   = jwt.role(token);
+        var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
-        var authenticated = new JwtAuthenticationToken(token, email, authorities);
-        return Mono.just(authenticated);
+        return Mono.just(new JwtAuthenticationToken(token, email, authorities));
     }
 
 
