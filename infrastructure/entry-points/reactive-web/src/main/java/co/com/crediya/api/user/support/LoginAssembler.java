@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class LoginAssembler {
 
     public Credentials normalize(LoginRequestDto dto) {
-        return new Credentials(dto.email().toLowerCase().trim(), dto.password());
+        return new Credentials(dto.email(), dto.password());
     }
 
     public record Credentials(String emailLower, String rawPassword) {}

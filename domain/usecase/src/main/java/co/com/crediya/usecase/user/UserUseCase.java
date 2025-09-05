@@ -45,7 +45,7 @@ public class UserUseCase implements IUserUseCase{
         if (validateSalary == null || validateSalary < 0 || validateSalary > 15_000_000L)
             throw new ValidationException("baseSalary must be between 0 and 15000000");
 
-        Role finalRole   = user.getRole()   != null ? user.getRole()   : Role.CLIENTE;
+        Role finalRole = user.getRole() != null ? user.getRole() : Role.CLIENT;
 
         return user.toBuilder()
                 .email(emailLower)

@@ -21,7 +21,7 @@ public class RegisterUserAssembler {
                 .phone(createUser.phone())
                 .email(createUser.email())
                 .password(passwordEncoder.encode(createUser.password()))
-                .role(Role.CLIENTE)
+                .role(Role.CLIENT)
                 .baseSalary(createUser.baseSalary())
                 .build();
     }
