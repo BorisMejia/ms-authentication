@@ -38,10 +38,9 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     @Transactional
     public Mono<User> save(User user) {
         final String dbCode = RoleCodeMapper.toDbCode(user.getRole());
-
         return roleDao.findByCode(dbCode)
                 .switchIfEmpty(Mono.error(
-                        new IllegalStateException("Rol no encontrado: " + dbCode)))
+                        new IllegalStateException("Role no encontrado: " + dbCode)))
                 .flatMap(roleEntity -> {
                     var data = toData(user);
                     data.setRoleId(roleEntity.getId());
@@ -74,13 +73,26 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
 
     @Override
     public Mono<User> updateRole(Long id, Role newRole) {
-        return null;
+        return Mono.error(new UnsupportedOperationException("Not implemented"));
     }
 
     @Override
     public Mono<User> findByEmail(String email) {
-        return repository.findByEmail(email)
-                .map(this::toEntity);
+        final String lower = email == null ? null : email.trim().toLowerCase();
+        return repository.findByEmail(lower)               // ? método existente (sin JOIN)
+                .switchIfEmpty(Mono.empty())
+                .flatMap(e ->                                    // e = UserEntity
+                        roleDao.findById(e.getRoleId())             // ? trae RoleEntity (ADMIN/ADVISOR/CLIENT)
+                                .map(r -> User.builder()
+                                        .id(e.getId())
+                                        .name(e.getName())
+                                        .lastName(e.getLastName())
+                                        .email(e.getEmail())
+                                        .baseSalary(e.getBaseSalary())
+                                        .password(e.getPassword())
+                                        .role(RoleCodeMapper.fromDbCode(r.getCode()))
+                                        .build()
+                                )
+                );
     }
-
 }
