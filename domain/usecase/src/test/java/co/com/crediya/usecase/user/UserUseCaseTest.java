@@ -1,7 +1,9 @@
 package co.com.crediya.usecase.user;
 
+import co.com.crediya.model.role.Role;
 import co.com.crediya.model.user.User;
 import co.com.crediya.model.user.exception.EmailAlreadyExistsException;
+import co.com.crediya.model.user.exception.ValidationException;
 import co.com.crediya.model.user.gateways.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,6 @@ public class UserUseCaseTest {
     @Mock
     private UserRepository userRepository;
 
-    @Mock
     private UserUseCase useCase;
 
     @BeforeEach
@@ -34,136 +35,187 @@ public class UserUseCaseTest {
                 .id(null)
                 .name("Pepe")
                 .lastName("Perez")
-                .email("perez@example.com")
+                .email("Pepe.Perez@Example.COM")
+                .password("hash-ya-generado")
                 .baseSalary(1_000_000L)
+                .role(null)
                 .build();
     }
 
     @Test
     void createUser_shouldError_whenEmailExists() {
         User u = validUser();
-        when(userRepository.existsByEmail(u.getEmail())).thenReturn(Mono.just(true));
+        String emailLower = u.getEmail().toLowerCase();
+
+        when(userRepository.existsByEmail(emailLower)).thenReturn(Mono.just(true));
 
         StepVerifier.create(useCase.createUser(u))
-                .expectErrorSatisfies(ex -> assertThat(ex).isInstanceOf(EmailAlreadyExistsException.class))
+                .expectErrorSatisfies(ex -> {
+                    assertThat(ex).isInstanceOf(EmailAlreadyExistsException.class);
+                    assertThat(ex.getMessage()).isEqualTo("Correo electronico no valido");
+                })
                 .verify();
 
-        verify(userRepository, times(1)).existsByEmail(u.getEmail());
+        verify(userRepository, times(1)).existsByEmail(emailLower);
         verify(userRepository, never()).save(any());
     }
 
     @Test
     void createUser_shouldError_whenNameBlank() {
-        User u = validUser().toBuilder().name("").build();
-        when(userRepository.existsByEmail(u.getEmail())).thenReturn(Mono.just(false));
+        User u = validUser().toBuilder().name(" ").build();
 
         StepVerifier.create(useCase.createUser(u))
                 .expectErrorSatisfies(ex -> {
-                    assertThat(ex).isInstanceOf(IllegalArgumentException.class);
-                    assertThat(ex.getMessage()).isEqualTo("Name is required");
+                    assertThat(ex).isInstanceOf(ValidationException.class);
+                    assertThat(ex.getMessage()).isEqualTo("name is required");
                 })
                 .verify();
 
-        verify(userRepository).existsByEmail(u.getEmail());
+        verify(userRepository, never()).existsByEmail(any());
         verify(userRepository, never()).save(any());
     }
 
     @Test
     void createUser_shouldError_whenLastNameBlank() {
-        User u = validUser().toBuilder().lastName(" ").build();
-        when(userRepository.existsByEmail(u.getEmail())).thenReturn(Mono.just(false));
+        User u = validUser().toBuilder().lastName("").build();
 
         StepVerifier.create(useCase.createUser(u))
                 .expectErrorSatisfies(ex -> {
-                    assertThat(ex).isInstanceOf(IllegalArgumentException.class);
+                    assertThat(ex).isInstanceOf(ValidationException.class);
                     assertThat(ex.getMessage()).isEqualTo("lastName is required");
                 })
                 .verify();
 
-        verify(userRepository).existsByEmail(u.getEmail());
+        verify(userRepository, never()).existsByEmail(any());
         verify(userRepository, never()).save(any());
     }
 
     @Test
     void createUser_shouldError_whenEmailBlank() {
         User u = validUser().toBuilder().email(" ").build();
-        when(userRepository.existsByEmail(u.getEmail())).thenReturn(Mono.just(false));
 
         StepVerifier.create(useCase.createUser(u))
                 .expectErrorSatisfies(ex -> {
-                    assertThat(ex).isInstanceOf(IllegalArgumentException.class);
+                    assertThat(ex).isInstanceOf(ValidationException.class);
                     assertThat(ex.getMessage()).isEqualTo("email is required");
                 })
                 .verify();
 
-        verify(userRepository).existsByEmail(u.getEmail());
+        verify(userRepository, never()).existsByEmail(any());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void createUser_shouldError_whenPasswordBlank() {
+        User u = validUser().toBuilder().password(" ").build();
+
+        StepVerifier.create(useCase.createUser(u))
+                .expectErrorSatisfies(ex -> {
+                    assertThat(ex).isInstanceOf(ValidationException.class);
+                    assertThat(ex.getMessage()).isEqualTo("passwordHash is required");
+                })
+                .verify();
+
+        verify(userRepository, never()).existsByEmail(any());
         verify(userRepository, never()).save(any());
     }
 
     @Test
     void createUser_shouldError_whenBaseSalaryNull() {
         User u = validUser().toBuilder().baseSalary(null).build();
-        when(userRepository.existsByEmail(u.getEmail())).thenReturn(Mono.just(false));
 
         StepVerifier.create(useCase.createUser(u))
                 .expectErrorSatisfies(ex -> {
-                    assertThat(ex).isInstanceOf(IllegalArgumentException.class);
+                    assertThat(ex).isInstanceOf(ValidationException.class);
                     assertThat(ex.getMessage()).isEqualTo("baseSalary must be between 0 and 15000000");
                 })
                 .verify();
 
-        verify(userRepository).existsByEmail(u.getEmail());
+        verify(userRepository, never()).existsByEmail(any());
         verify(userRepository, never()).save(any());
     }
 
     @Test
     void createUser_shouldError_whenBaseSalaryNegative() {
         User u = validUser().toBuilder().baseSalary(-1L).build();
-        when(userRepository.existsByEmail(u.getEmail())).thenReturn(Mono.just(false));
 
         StepVerifier.create(useCase.createUser(u))
                 .expectErrorSatisfies(ex -> {
-                    assertThat(ex).isInstanceOf(IllegalArgumentException.class);
+                    assertThat(ex).isInstanceOf(ValidationException.class);
                     assertThat(ex.getMessage()).isEqualTo("baseSalary must be between 0 and 15000000");
                 })
                 .verify();
 
-        verify(userRepository).existsByEmail(u.getEmail());
+        verify(userRepository, never()).existsByEmail(any());
         verify(userRepository, never()).save(any());
     }
 
     @Test
     void createUser_shouldError_whenBaseSalaryTooHigh() {
         User u = validUser().toBuilder().baseSalary(15_000_001L).build();
-        when(userRepository.existsByEmail(u.getEmail())).thenReturn(Mono.just(false));
 
         StepVerifier.create(useCase.createUser(u))
                 .expectErrorSatisfies(ex -> {
-                    assertThat(ex).isInstanceOf(IllegalArgumentException.class);
+                    assertThat(ex).isInstanceOf(ValidationException.class);
                     assertThat(ex.getMessage()).isEqualTo("baseSalary must be between 0 and 15000000");
                 })
                 .verify();
 
-        verify(userRepository).existsByEmail(u.getEmail());
+        verify(userRepository, never()).existsByEmail(any());
         verify(userRepository, never()).save(any());
     }
 
     @Test
     void createUser_shouldSave_whenAllValid() {
         User input = validUser();
-        User saved = input.toBuilder().id("generated-id-123").build();
+        String emailLower = input.getEmail().toLowerCase();
 
-        when(userRepository.existsByEmail(input.getEmail())).thenReturn(Mono.just(false));
-        when(userRepository.save(input)).thenReturn(Mono.just(saved));
+        // mock: no existe el email
+        when(userRepository.existsByEmail(emailLower)).thenReturn(Mono.just(false));
+
+        // mock: guarda cualquier User; devuelve el mismo con id seteado
+        when(userRepository.save(any(User.class)))
+                .thenAnswer(inv -> {
+                    User toSave = inv.getArgument(0);
+                    return Mono.just(toSave.toBuilder().id("generated-id-123").build());
+                });
 
         StepVerifier.create(useCase.createUser(input))
-                .expectNext(saved)
+                .assertNext(u -> {
+                    assertThat(u.getId()).isEqualTo("generated-id-123");
+                    assertThat(u.getEmail()).isEqualTo(emailLower);
+                    assertThat(u.getRole()).isEqualTo(Role.CLIENT);   // <-- default esperado
+                    assertThat(u.getName()).isEqualTo(input.getName());
+                    assertThat(u.getLastName()).isEqualTo(input.getLastName());
+                    assertThat(u.getBaseSalary()).isEqualTo(input.getBaseSalary());
+                    assertThat(u.getPassword()).isEqualTo(input.getPassword());
+                })
                 .verifyComplete();
 
-        verify(userRepository, times(1)).existsByEmail(input.getEmail());
+        // Captura lo que realmente se intentó guardar y valida normalización
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository, times(1)).existsByEmail(emailLower);
         verify(userRepository, times(1)).save(captor.capture());
-        assertThat(captor.getValue()).isEqualTo(input);
+        User toSave = captor.getValue();
+
+        assertThat(toSave.getEmail()).isEqualTo(emailLower);
+        assertThat(toSave.getRole()).isEqualTo(Role.CLIENT);
+    }
+
+
+    @Test
+    void getUserByEmail_shouldLowercaseBeforeQuery() {
+        String mixed = "Mi.Email@Example.com";
+        String lower = mixed.toLowerCase();
+        User mocked = validUser().toBuilder().email(lower).build();
+
+        when(userRepository.findByEmail(lower)).thenReturn(Mono.just(mocked));
+
+        StepVerifier.create(useCase.getUserByEmail(mixed))
+                .expectNext(mocked)
+                .verifyComplete();
+
+        verify(userRepository).findByEmail(lower);
     }
 
     @Test
