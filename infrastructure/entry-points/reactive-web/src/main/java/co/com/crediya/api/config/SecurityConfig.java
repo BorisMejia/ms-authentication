@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authorizeExchange(reg -> reg
                         .pathMatchers(
                                 "/v3/api-docs/**",
+                                "/.well-known/jwks.json",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/webjars/**",

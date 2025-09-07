@@ -17,8 +17,8 @@ adapters:
     port: 5433
     database: "auth_db"
     schema: "public"
-    username: "auth_user"
-    password: "auth_pass"
+    username: "${DB_USER}"
+    password: "${DB_PASS}"
   data:
     r2dbc:
       repositories: null
@@ -32,6 +32,7 @@ security:
   jwt:
     issuer: crediya-auth
     expiration-minutes: 120
+    kid: rsa-1
 management:
   endpoints:
     web:

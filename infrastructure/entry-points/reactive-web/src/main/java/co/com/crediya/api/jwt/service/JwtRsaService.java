@@ -15,11 +15,13 @@ public class JwtRsaService {
     private final Algorithm algorithm;
     private final String issuer;
     private final long expMinutes;
+    private final String kid;
 
-    public JwtRsaService(RSAPublicKey publicKey, RSAPrivateKey privateKey, String issuer, long expMinutes) {
+    public JwtRsaService(RSAPublicKey publicKey, RSAPrivateKey privateKey, String issuer, long expMinutes, String kid) {
         this.algorithm = Algorithm.RSA256(publicKey, privateKey);
         this.issuer = issuer;
         this.expMinutes = expMinutes;
+        this.kid = kid;
     }
 
     public String generateTimeToken(String email, String role){
@@ -29,6 +31,7 @@ public class JwtRsaService {
                 .withIssuer(issuer)
                 .withSubject(email)
                 .withClaim("role", role)
+                .withKeyId(kid)
                 .withIssuedAt(now)
                 .withExpiresAt(exp)
                 .sign(algorithm);

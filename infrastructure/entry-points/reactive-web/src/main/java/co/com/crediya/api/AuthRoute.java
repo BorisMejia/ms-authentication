@@ -1,5 +1,6 @@
 package co.com.crediya.api;
 
+import co.com.crediya.api.jwks.JwksHandler;
 import co.com.crediya.api.user.login.LoginHandler;
 import co.com.crediya.api.user.login.dto.request.LoginRequestDto;
 import co.com.crediya.api.user.login.dto.response.TokenResponse;
@@ -87,11 +88,13 @@ public class AuthRoute {
                     )
             )
     })
-    public RouterFunction<ServerResponse> routes(RegisterHandler registerHandler, LoginHandler loginHandler) {
+    public RouterFunction<ServerResponse> routes(RegisterHandler registerHandler, LoginHandler loginHandler, JwksHandler jwksHandler) {
         return RouterFunctions
                 .route(GET("/api/v1/health"), registerHandler::health)
                 .andRoute(POST("/api/v1/users"), registerHandler::registerUser)
-                .andRoute(POST("/api/v1/login"), loginHandler::login);
+                .andRoute(POST("/api/v1/login"), loginHandler::login)
+                .andRoute(GET("/.well-known/jwks.json"), jwksHandler::jwks)
+                ;
 
     }
     record ErrorMessage(String message) {}
