@@ -26,4 +26,5 @@ public class UserEntity {
     private String password;
     private Long baseSalary;
     private Long roleId;
+    private String document;
 }

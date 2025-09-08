@@ -14,6 +14,7 @@ public class RegisterUserAssembler {
 
     public User toDomain(CreateUserRequestDto createUser){
         return User.builder()
+                .document(createUser.document())
                 .name(createUser.name())
                 .lastName(createUser.lastName())
                 .birthday(createUser.birthday())

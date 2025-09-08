@@ -79,18 +79,19 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     @Override
     public Mono<User> findByEmail(String email) {
         final String lower = email == null ? null : email.trim().toLowerCase();
-        return repository.findByEmail(lower)               // ? método existente (sin JOIN)
+        return repository.findByEmail(lower)
                 .switchIfEmpty(Mono.empty())
-                .flatMap(e ->                                    // e = UserEntity
-                        roleDao.findById(e.getRoleId())             // ? trae RoleEntity (ADMIN/ADVISOR/CLIENT)
-                                .map(r -> User.builder()
-                                        .id(e.getId())
-                                        .name(e.getName())
-                                        .lastName(e.getLastName())
-                                        .email(e.getEmail())
-                                        .baseSalary(e.getBaseSalary())
-                                        .password(e.getPassword())
-                                        .role(RoleCodeMapper.fromDbCode(r.getCode()))
+                .flatMap(userEntity ->
+                        roleDao.findById(userEntity.getRoleId())             // ? trae RoleEntity (ADMIN/ADVISOR/CLIENT)
+                                .map(role -> User.builder()
+                                        .id(userEntity.getId())
+                                        .name(userEntity.getName())
+                                        .lastName(userEntity.getLastName())
+                                        .email(userEntity.getEmail())
+                                        .baseSalary(userEntity.getBaseSalary())
+                                        .password(userEntity.getPassword())
+                                        .role(RoleCodeMapper.fromDbCode(role.getCode()))
+                                        .document(userEntity.getDocument())
                                         .build()
                                 )
                 );
