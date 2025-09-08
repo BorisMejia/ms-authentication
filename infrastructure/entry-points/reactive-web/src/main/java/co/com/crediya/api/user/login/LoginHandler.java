@@ -51,7 +51,7 @@ public class LoginHandler {
                     if (user.getRole() == null)
                         return Mono.error(new ValidationException("Usuario sin rol asignado"));
 
-                    String token = jwt.generateTimeToken(user.getEmail(), user.getRole().name());
+                    String token = jwt.generateTimeToken(user.getEmail(), user.getRole().name(), user.getDocument());
                     return Mono.just(new TokenResponse(token, jwt.expiresAt(token)));
                 });
     }

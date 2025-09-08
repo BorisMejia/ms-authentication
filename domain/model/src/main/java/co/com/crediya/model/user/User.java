@@ -16,7 +16,6 @@ import java.time.LocalDate;
 public class User {
 
     private String id;
-    private String document;
     private String name;
     private String lastName;
     private LocalDate birthday;
@@ -26,4 +25,5 @@ public class User {
     private String password;
     private Long baseSalary;
     private Role role;
+    private String document;
 }

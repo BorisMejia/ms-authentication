@@ -14,7 +14,6 @@ public class RegisterUserAssembler {
 
     public User toDomain(CreateUserRequestDto createUser){
         return User.builder()
-                .document(createUser.document())
                 .name(createUser.name())
                 .lastName(createUser.lastName())
                 .birthday(createUser.birthday())
@@ -24,6 +23,7 @@ public class RegisterUserAssembler {
                 .password(passwordEncoder.encode(createUser.password()))
                 .role(Role.CLIENT)
                 .baseSalary(createUser.baseSalary())
+                .document(createUser.document().trim())
                 .build();
     }
 }

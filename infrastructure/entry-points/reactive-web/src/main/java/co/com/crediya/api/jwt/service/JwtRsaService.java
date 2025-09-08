@@ -24,13 +24,14 @@ public class JwtRsaService {
         this.kid = kid;
     }
 
-    public String generateTimeToken(String email, String role){
+    public String generateTimeToken(String email, String role, String document){
         var now = Instant.now();
         var exp = now.plus(expMinutes, ChronoUnit.MINUTES);
         return JWT.create()
                 .withIssuer(issuer)
                 .withSubject(email)
                 .withClaim("role", role)
+                .withClaim("doc", document)
                 .withKeyId(kid)
                 .withIssuedAt(now)
                 .withExpiresAt(exp)
