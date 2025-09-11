@@ -1,4 +1,4 @@
-package co.com.crediya.api.user.support;
+package co.com.crediya.api.user.register.support;
 
 import co.com.crediya.api.user.register.dto.request.CreateUserRequestDto;
 import co.com.crediya.model.role.Role;
