@@ -13,4 +13,5 @@ public interface UserRepository {
     Flux<User> findAll();
     Mono<User> updateRole(Long id, Role newRole);
     Mono<User> findByEmail(String email);
+    Mono<User> findUserInfoByDocument(String document);
 }
