@@ -96,4 +96,27 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
                                 )
                 );
     }
+
+    @Override
+        public Mono<User> findUserInfoByDocument(String document) {
+            log.info("Buscando usuario con documento recibido: {}", document);
+            return repository.findAll()
+                    .doOnNext(userEntity -> log.info("Documento en BD: {}", userEntity.getDocument()))
+                    .filter(userEntity -> document.trim().equalsIgnoreCase(userEntity.getDocument().trim()))
+                    .next()
+                    .flatMap(userEntity ->
+                        roleDao.findById(userEntity.getRoleId())
+                            .map(role -> User.builder()
+                                .id(userEntity.getId())
+                                .name(userEntity.getName())
+                                .lastName(userEntity.getLastName())
+                                .email(userEntity.getEmail())
+                                .baseSalary(userEntity.getBaseSalary())
+                                .password(userEntity.getPassword())
+                                .role(RoleCodeMapper.fromDbCode(role.getCode()))
+                                .document(userEntity.getDocument())
+                                .build()
+                            )
+                    );
+    }
 }
