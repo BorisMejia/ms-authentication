@@ -5,6 +5,7 @@ import co.com.crediya.model.user.User;
 import co.com.crediya.model.user.exception.EmailAlreadyExistsException;
 import co.com.crediya.model.user.exception.ValidationException;
 import co.com.crediya.model.user.gateways.UserRepository;
+import co.com.crediya.usecase.user.dto.UserInfoDto;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -32,6 +33,13 @@ public class UserUseCase implements IUserUseCase{
     @Override
     public Mono<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email.toLowerCase());
+    }
+
+    public Mono<UserInfoDto> getUserInfoByDocument(String document){
+        return userRepository.findAll()
+                .filter(user -> document.equals(user.getDocument()))
+                .next()
+                .map(user ->  new UserInfoDto(user.getName(), user.getBaseSalary() != null ? user.getBaseSalary().doubleValue() : null));
     }
 
     private User sanitizeAndValidate(User user, String emailLower) {

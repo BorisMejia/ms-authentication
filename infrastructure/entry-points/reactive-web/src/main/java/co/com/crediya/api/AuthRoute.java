@@ -86,7 +86,20 @@ public class AuthRoute {
 
 
                     )
-            )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/user/info/{document}",
+                    method = RequestMethod.GET,
+                    beanClass = LoginHandler.class,
+                    beanMethod = "getUserInfoByDocument",
+                    operation = @Operation(
+                            operationId = "getUserInfoByDocument",
+                            summary = "get data by user",
+                            responses = {
+                                    @ApiResponse(responseCode = "200", description = "OK")
+                            }
+                    )
+            ),
     })
     public RouterFunction<ServerResponse> routes(RegisterHandler registerHandler, LoginHandler loginHandler, JwksHandler jwksHandler) {
         return RouterFunctions
@@ -94,6 +107,7 @@ public class AuthRoute {
                 .andRoute(POST("/api/v1/users"), registerHandler::registerUser)
                 .andRoute(POST("/api/v1/login"), loginHandler::login)
                 .andRoute(GET("/.well-known/jwks.json"), jwksHandler::jwks)
+                .andRoute(GET("/api/v1/user/info/{document}"), loginHandler::getUserInfoByDocument)
                 ;
 
     }
