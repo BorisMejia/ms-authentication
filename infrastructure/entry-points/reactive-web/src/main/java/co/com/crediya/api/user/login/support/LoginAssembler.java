@@ -1,4 +1,4 @@
-package co.com.crediya.api.user.support;
+package co.com.crediya.api.user.login.support;
 
 import co.com.crediya.api.user.login.dto.request.LoginRequestDto;
 import org.springframework.stereotype.Component;

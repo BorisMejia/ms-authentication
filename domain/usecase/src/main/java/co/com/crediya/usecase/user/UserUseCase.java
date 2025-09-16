@@ -40,6 +40,7 @@ public class UserUseCase implements IUserUseCase{
         if (isBlank(emailLower))        throw new ValidationException("email is required");
         if (isBlank(user.getPassword()))
             throw new ValidationException("passwordHash is required");
+        if (isBlank(user.getDocument())) throw new ValidationException("Document is required");
 
         Long validateSalary = user.getBaseSalary();
         if (validateSalary == null || validateSalary < 0 || validateSalary > 15_000_000L)

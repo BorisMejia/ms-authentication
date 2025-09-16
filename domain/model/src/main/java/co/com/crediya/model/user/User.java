@@ -25,4 +25,5 @@ public class User {
     private String password;
     private Long baseSalary;
     private Role role;
+    private String document;
 }

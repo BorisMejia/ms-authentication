@@ -39,6 +39,7 @@ public class UserUseCaseTest {
                 .password("hash-ya-generado")
                 .baseSalary(1_000_000L)
                 .role(null)
+                .document("12345")
                 .build();
     }
 
