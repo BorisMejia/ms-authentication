@@ -13,7 +13,7 @@ spring:
     include: null
 adapters:
   r2dbc:
-    host: "postgres"
+    host: "postgres-authentication"
     port: 5432
     database: "auth_db"
     username: "auth_user"
