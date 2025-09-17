@@ -43,7 +43,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .pathMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
                         .pathMatchers(HttpMethod.POST, "/api/v1/users").hasAnyRole("ADMIN","ADVISOR") // <- protegido
-                        .pathMatchers(HttpMethod.GET, "/api/v1/user/info/{document}").permitAll()
+                                .pathMatchers(HttpMethod.GET, "/api/v1/user/info/{document}").hasRole("ADVISOR")
                         .anyExchange().authenticated()
                 )
                 .addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)
