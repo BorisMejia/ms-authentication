@@ -13,12 +13,11 @@ spring:
     include: null
 adapters:
   r2dbc:
-    host: "localhost"
-    port: 5433
+    host: "postgres"
+    port: 5432
     database: "auth_db"
-    schema: "public"
-    username: "${DB_USER}"
-    password: "${DB_PASS}"
+    username: "auth_user"
+    password: "auth_pass"
   data:
     r2dbc:
       repositories: null
