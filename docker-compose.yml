@@ -1,7 +1,6 @@
 version: '3.8'
 services:
-
-  postgres:
+  postgres-authentication:
     image: postgres:15
     container_name: authentication-db
     environment:
@@ -11,7 +10,7 @@ services:
     ports:
       - "127.0.0.1:5433:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - pgdata-auth:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app-network
@@ -22,19 +21,55 @@ services:
       dockerfile: deployment/Dockerfile
     container_name: ms-authentication
     depends_on:
-      - postgres
+      - postgres-authentication
     environment:
-      SPRING_R2DBC_URL: r2dbc:postgresql://authentication-db:5433/auth_db
+      SPRING_R2DBC_URL: r2dbc:postgresql://postgres-authentication:5433/auth_db
       SPRING_R2DBC_USERNAME: auth_user
       SPRING_R2DBC_PASSWORD: auth_pass
     ports:
       - "8080:8080"
     networks:
+      - app-network  
+
+  postgres-solicitud:
+    image: postgres:15
+    container_name: solicitud-db
+    environment:
+      POSTGRES_DB: solicitud_db
+      POSTGRES_USER: solicitud_user
+      POSTGRES_PASSWORD: solicitud_pass
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - pgdata-solicitud:/var/lib/postgresql/data
+      - ../ms-solicitud/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
       - app-network
+
+  app-solicitud:
+    build:
+      context: ../ms-solicitud
+      dockerfile: deployment/Dockerfile
+    container_name: ms-solicitud
+    env_file:
+      - ../ms-solicitud/.env
+    depends_on:
+      - postgres-solicitud
+    environment:
+      DB_URL: r2dbc:postgresql://postgres-solicitud:5434/solicitud_db
+      DB_USER: solicitud_user
+      DB_PASS: solicitud_pass
+      JWK_URL: http://ms-authentication:8080/.well-known/jwks.json
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  pgdata-solicitud:
+  pgdata-auth:
 
 networks:
   app-network:
     driver: bridge
-
-volumes:
-  postgres-data:
